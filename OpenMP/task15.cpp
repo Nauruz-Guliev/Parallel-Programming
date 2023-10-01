@@ -32,12 +32,11 @@ int main() {
 
         for (int i = start + thread_id; i <= end; i += num_threads) {
             if (is_prime(i)) {
-    #pragma omp critical
+            #pragma omp critical
                 printf("%d ", i);
             }
         }
     }
 
     printf("\n");
-
 }
