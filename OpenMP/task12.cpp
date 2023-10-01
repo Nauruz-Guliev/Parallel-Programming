@@ -5,7 +5,6 @@
 
 int main() {
     int thread_id = omp_get_thread_num();
-
     #pragma omp barrier
     for (int i = omp_get_num_threads() - 1; i >= 0; i--)
     {
