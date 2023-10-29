@@ -27,30 +27,25 @@ int main(int argc, char** argv) {
             vector_y[i] = dist(gen);
         }
 
-        // Отправка векторов x и y
         for (int i = 1; i < size; i++) {
             MPI_Send(vector_x, VECTOR_SIZE, MPI_INT, i, 0, MPI_COMM_WORLD);
             MPI_Send(vector_y, VECTOR_SIZE, MPI_INT, i, 0, MPI_COMM_WORLD);
         }
     }
     else {
-        // Получение векторов x и y
         MPI_Recv(vector_x, VECTOR_SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         MPI_Recv(vector_y, VECTOR_SIZE, MPI_INT, 0, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
     }
 
-    // Вычисление локальных значений вектора z
     for (int i = 0; i < VECTOR_SIZE; i++) {
         vector_z[i] = a * vector_x[i] + b * vector_y[i];
     }
 
     if (rank == 0) {
-        // Получение результатов от других процессов
         for (int i = 1; i < size; i++) {
             MPI_Recv(&vector_z[i * VECTOR_SIZE / size], VECTOR_SIZE / size, MPI_INT, i, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
         }
 
-        // Вывод результата
         printf("Result: ");
         for (int i = 0; i < VECTOR_SIZE; i++) {
             printf("%d ", vector_z[i]);
@@ -58,10 +53,8 @@ int main(int argc, char** argv) {
         printf("\n");
     }
     else {
-        // Отправка локальных значений вектора z
         MPI_Send(vector_z, VECTOR_SIZE / size, MPI_INT, 0, 0, MPI_COMM_WORLD);
     }
 
     MPI_Finalize();
-    return 0;
 }
